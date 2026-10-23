@@ -1,0 +1,44 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  lint-and-test:
+    name: Python ${{ matrix.python-version }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.10", "3.11", "3.12"]
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: pip
+          cache-dependency-path: requirements-dev.txt
+
+      - name: Install dev dependencies (no TensorFlow — heavy tests skip)
+        run: pip install -r requirements-dev.txt
+
+      - name: Lint
+        run: ruff check sign_language train.py predict.py scripts tests
+
+      - name: Byte-compile all sources
+        run: python -m compileall -q sign_language train.py predict.py scripts tests
+
+      - name: Run tests
+        run: python -m pytest
+
+      - name: CLI smoke test (--help must work without the ML stack)
+        run: |
+          python train.py --help
+          python predict.py --help
+          python scripts/check_dataset.py --help

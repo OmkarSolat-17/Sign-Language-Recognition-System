@@ -1,0 +1,41 @@
+name: Bug report
+description: Something fails, crashes, or gives wrong results
+labels: [bug]
+body:
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened?
+      description: The command you ran and what went wrong.
+      placeholder: "I ran `python predict.py` and got ..."
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: What did you expect to happen?
+    validations:
+      required: true
+  - type: textarea
+    id: output
+    attributes:
+      label: Full output
+      description: Re-run with `--verbose` and paste the complete output. If it's a training issue, also paste the output of `python scripts/check_dataset.py --dataset <your path>`.
+      render: text
+    validations:
+      required: true
+  - type: input
+    id: env
+    attributes:
+      label: Environment
+      description: OS, Python version (`python --version`), and how you installed dependencies.
+      placeholder: "Windows 11, Python 3.11.9, pip install -r requirements.txt"
+    validations:
+      required: true
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Before filing
+      options:
+        - label: I checked docs/troubleshooting.md and the message isn't covered there
+        - label: I am not including a dataset, model file, or personal file paths I can't share

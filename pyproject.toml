@@ -1,0 +1,75 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "sign-language-recognition"
+version = "1.0.0"
+description = "Real-time sign language to text recognition using MediaPipe hand tracking and a TensorFlow/Keras CNN."
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [{ name = "Omkar Solat" }]
+keywords = ["sign-language", "computer-vision", "mediapipe", "tensorflow", "accessibility"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Education",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Topic :: Scientific/Engineering :: Image Recognition",
+]
+
+# Heavy ML dependencies are optional at the packaging level so the core
+# package (dataset scanning, config, helpers) and its tests can be
+# installed and run without TensorFlow. End users should simply run
+# `pip install -r requirements.txt`.
+dependencies = []
+
+[project.optional-dependencies]
+ml = [
+    "tensorflow>=2.15,<3.0",
+    "opencv-python>=4.8",
+    "mediapipe>=0.10",
+    "numpy>=1.24",
+    "scikit-learn>=1.3",
+    "Pillow>=10.0",
+]
+dev = [
+    "pytest>=7.4",
+    "pytest-cov>=4.1",
+    "ruff>=0.4",
+    "numpy>=1.24",
+]
+
+[project.scripts]
+slr-train = "sign_language.training:main"
+slr-predict = "sign_language.inference:main"
+
+[project.urls]
+Homepage = "https://github.com/OmkarSolat-17/Sign-Language-Recognition-System"
+Issues = "https://github.com/OmkarSolat-17/Sign-Language-Recognition-System/issues"
+
+[tool.setuptools.packages.find]
+include = ["sign_language*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B"]
+ignore = ["E501"]  # line length handled by formatter settings; keep lint pragmatic
+
+[tool.coverage.run]
+source = ["sign_language"]
+omit = ["sign_language/inference.py"]  # webcam loop: covered by manual/smoke testing

@@ -1,0 +1,9 @@
+# Runtime dependencies for training and real-time prediction.
+# Tested on Python 3.10-3.12. For a minimal environment that only runs
+# the unit tests / dataset checker, install requirements-dev.txt instead.
+tensorflow>=2.15,<3.0
+opencv-python>=4.8
+mediapipe>=0.10
+numpy>=1.24
+scikit-learn>=1.3
+Pillow>=10.0

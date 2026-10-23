@@ -1,61 +1,24 @@
-import os
-import cv2
-import numpy as np
-import tensorflow as tf
-from tensorflow.keras import layers, models
-from sklearn.model_selection import train_test_split
+#!/usr/bin/env python3
+"""Train the sign-language recognition model.
 
-# DATASET PATH
-DATASET_PATH = "C:\\Users\\omkar\\OneDrive\\Desktop\\sign_language_project\\dataset"
-IMG_SIZE = 64
-CLASSES = sorted(os.listdir(DATASET_PATH))
+This is a thin, backwards-compatible entry point — the implementation
+lives in :mod:`sign_language.training`.  Run ``python train.py --help``
+for all options.
 
-X = []
-y = []
+Quick start::
 
-# Load images
-for label, folder in enumerate(CLASSES):
-    folder_path = os.path.join(DATASET_PATH, folder)
-    for img_name in os.listdir(folder_path):
-        img_path = os.path.join(folder_path, img_name)
-        img = cv2.imread(img_path)
-        img = cv2.resize(img, (IMG_SIZE, IMG_SIZE))
-        X.append(img)
-        y.append(label)
+    python train.py --dataset dataset --epochs 20
 
-X = np.array(X) / 255.0
-y = np.array(y)
+On success this writes ``model.keras``, ``labels.json`` and
+``training_history.json`` (all paths configurable; see ``--help``).
+Expected failures (missing dataset, too few images, missing
+dependencies, ...) print a single actionable ``ERROR: ...`` line and
+exit with status 1 instead of a traceback.
+"""
 
-# Train test split
-X_train, X_test, y_train, y_test = train_test_split(
-    X, y, test_size=0.2, random_state=42
-)
+import sys
 
-# CNN MODEL
-model = models.Sequential([
-    layers.Conv2D(32, (3,3), activation='relu', input_shape=(64,64,3)),
-    layers.MaxPooling2D(2,2),
+from sign_language.training import main
 
-    layers.Conv2D(64, (3,3), activation='relu'),
-    layers.MaxPooling2D(2,2),
-
-    layers.Conv2D(128, (3,3), activation='relu'),
-    layers.MaxPooling2D(2,2),
-
-    layers.Flatten(),
-    layers.Dense(256, activation='relu'),
-    layers.Dense(len(CLASSES), activation='softmax')
-])
-
-model.compile(
-    optimizer='adam',
-    loss='sparse_categorical_crossentropy',
-    metrics=['accuracy']
-)
-
-# TRAIN
-model.fit(X_train, y_train, epochs=10, validation_data=(X_test, y_test))
-
-# SAVE MODEL
-model.save("model.h5")
-print("✅ Model trained and saved as model.h5")
+if __name__ == "__main__":
+    sys.exit(main())
