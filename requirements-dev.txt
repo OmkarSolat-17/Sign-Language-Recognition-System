@@ -1,0 +1,7 @@
+# Development dependencies (tests + lint). Deliberately does NOT pull in
+# TensorFlow/MediaPipe so CI and new contributors get a fast install;
+# TensorFlow-dependent tests skip automatically when it is absent.
+pytest>=7.4
+pytest-cov>=4.1
+ruff>=0.4
+numpy>=1.24

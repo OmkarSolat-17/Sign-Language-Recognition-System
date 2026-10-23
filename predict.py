@@ -1,61 +1,24 @@
-import cv2
-import numpy as np
-import tensorflow as tf
-import mediapipe as mp
-import os
+#!/usr/bin/env python3
+"""Recognise sign language from a webcam, video file, or single image.
 
-# Load model
-model = tf.keras.models.load_model("model.h5")
-CLASSES = sorted(os.listdir("C:\\Users\\omkar\\OneDrive\\Desktop\\sign_language_project\\dataset"))
+This is a thin, backwards-compatible entry point — the implementation
+lives in :mod:`sign_language.inference`.  Run ``python predict.py --help``
+for all options.
 
-mp_hands = mp.solutions.hands
-hands = mp_hands.Hands()
-mp_draw = mp.solutions.drawing_utils
+Examples::
 
-cap = cv2.VideoCapture(0)
+    python predict.py                        # webcam (q / Esc to quit)
+    python predict.py --source clip.mp4      # video file
+    python predict.py --image photo.jpg      # single image, no camera
 
-while True:
-    ret, frame = cap.read()
-    if not ret:
-        break
+Expected failures (missing model/labels, unavailable camera, corrupt
+image, ...) print a single actionable ``ERROR: ...`` line and exit with
+status 1 instead of a traceback.
+"""
 
-    rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-    result = hands.process(rgb)
+import sys
 
-    if result.multi_hand_landmarks:
-        for handLms in result.multi_hand_landmarks:
-            h, w, _ = frame.shape
-            x_min, y_min = w, h
-            x_max, y_max = 0, 0
+from sign_language.inference import main
 
-            for lm in handLms.landmark:
-                x, y = int(lm.x * w), int(lm.y * h)
-                x_min, y_min = min(x,x_min), min(y,y_min)
-                x_max, y_max = max(x,x_max), max(y,y_max)
-
-            # Crop hand
-            hand_img = frame[y_min:y_max, x_min:x_max]
-            if hand_img.size == 0:
-                continue
-
-            hand_img = cv2.resize(hand_img, (64,64))
-            hand_img = hand_img / 255.0
-            hand_img = np.expand_dims(hand_img, axis=0)
-
-            prediction = model.predict(hand_img)
-            class_id = np.argmax(prediction)
-            sign = CLASSES[class_id]
-
-            cv2.rectangle(frame, (x_min,y_min), (x_max,y_max), (0,255,0), 2)
-            cv2.putText(frame, sign, (x_min, y_min-10),
-                        cv2.FONT_HERSHEY_SIMPLEX, 1, (0,255,0), 2)
-
-            mp_draw.draw_landmarks(frame, handLms, mp_hands.HAND_CONNECTIONS)
-
-    cv2.imshow("Sign Language Recognition", frame)
-
-    if cv2.waitKey(1) & 0xFF == 27:
-        break
-
-cap.release()
-cv2.destroyAllWindows()
+if __name__ == "__main__":
+    sys.exit(main())

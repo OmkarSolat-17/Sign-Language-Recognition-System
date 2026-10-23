@@ -1,0 +1,44 @@
+# --- Python ---
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+build/
+dist/
+.venv/
+venv/
+env/
+
+# --- Tests / tooling caches ---
+.pytest_cache/
+.coverage
+htmlcov/
+.ruff_cache/
+.mypy_cache/
+
+# --- IDE / OS ---
+.idea/
+.vscode/
+*.swp
+.DS_Store
+Thumbs.db
+
+# --- Trained artefacts (large, reproducible with train.py) ---
+*.h5
+*.keras
+labels.json
+training_history.json
+checkpoints/
+
+# --- Dataset (large; not stored in git — see docs/dataset.md) ---
+dataset/*
+!dataset/README.md
+!dataset/.gitkeep
+data/*
+!data/.gitkeep
+
+# --- Logs / local output ---
+*.log
+output/
+outputs/
+annotated_*.jpg

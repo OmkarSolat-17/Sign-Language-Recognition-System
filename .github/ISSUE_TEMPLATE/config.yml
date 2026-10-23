@@ -1,0 +1,5 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Usage questions
+    url: https://github.com/OmkarSolat-17/Sign-Language-Recognition-System/blob/main/docs/troubleshooting.md
+    about: Please check the troubleshooting guide first — most setup problems are covered there.
