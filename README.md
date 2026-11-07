@@ -249,12 +249,17 @@ Short version — see **[docs/troubleshooting.md](docs/troubleshooting.md)** for
 - **Camera won't open** → close other apps using it, check OS camera permissions, try `--source 1`.
 - **`pip install mediapipe/tensorflow` fails** → use Python 3.10–3.12 (3.11 is the safest bet) inside a virtual environment.
 - **Predictions are one class off / nonsense after renaming folders** → your `labels.json` doesn't match the model; retrain or pass the matching `--labels`. The predictor refuses to run when the label *count* doesn't match the model, but only retraining fixes a same-count mismatch.
+- **Training reports 95%+ but the webcam gets almost everything wrong** → training resizes the whole image while prediction feeds the model a hand crop. See **[docs/accuracy-analysis.md](docs/accuracy-analysis.md)** for the measurement and the fix.
 
 ## 🗺 Roadmap
 
-Ideas are tracked as GitHub issues; the most valuable next steps:
+Ideas are tracked as GitHub issues; the most valuable next steps (the first three are
+diagnosed and measured in **[docs/accuracy-analysis.md](docs/accuracy-analysis.md)**):
 
-- [ ] Landmark-based model (classify MediaPipe's 21 hand landmarks instead of pixels — smaller, faster, lighting-invariant)
+- [ ] **Accuracy P0** — three-way train/validation/test split (the printed test accuracy is currently tuned on itself), one shared preprocessing function for training *and* inference, horizontal flip made opt-in, per-class metrics + confusion matrix
+- [ ] **Accuracy P1** — transfer learning (MobileNetV2/EfficientNetB0) instead of a from-scratch CNN; train through the MediaPipe crop so training and inference see the same distribution
+- [ ] Landmark-based model (classify MediaPipe's 21 hand landmarks instead of pixels — smaller, faster, lighting-invariant, and the only route to motion signs)
+
 - [ ] Word/sentence assembly: stable-sign detection, space/delete gestures, on-screen sentence buffer
 - [ ] A small dataset-recording tool (`scripts/record_dataset.py`) for collecting balanced data from a webcam
 - [ ] Export to TFLite/ONNX for mobile and browser deployment

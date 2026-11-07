@@ -7,5 +7,6 @@
 | [usage.md](usage.md) | You're training a model or running prediction |
 | [troubleshooting.md](troubleshooting.md) | Something failed — start here before opening an issue |
 | [development.md](development.md) | You're setting up a dev environment or submitting a PR |
+| [accuracy-analysis.md](accuracy-analysis.md) | You want to know how accurate the model really is, why the reported number is optimistic, or which dataset to use |
 
 New here? Start with the [project README](../README.md#quick-start).
